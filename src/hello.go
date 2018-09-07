@@ -38,7 +38,7 @@ func main() {
 
 		fmt.Println("your input is --> ", func_selection, "!")
 
-		if func_selection == "exit" {
+		if func_selection == "exit" || func_selection == "q" {
 			break
 		} else if func_selection == "sum" { //golang调用函数求和
 			var num01, num02, sum_num int
