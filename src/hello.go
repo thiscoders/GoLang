@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+	"log"
+	"strings"
+)
 
 var (
 	str01, str02 string
@@ -27,6 +32,22 @@ func parsemUser(po mUser) {
 	 */
 	fmt.Println("begin parse user...")
 	fmt.Println(po.username, po.password)
+}
+
+func web_server(w http.ResponseWriter,r *http.Request) {
+	/**
+	静态网页服务
+	 */
+	r.ParseForm()
+	log.Print(r.Form)
+	for k,v := range r.Form {
+		log.Print("key:",k)
+		log.Print("val:",strings.Join(v,""))
+		if k == "opt" && strings.Join(v,"") == "stop" {
+			fmt.Fprintf(w,"<center>Bye Bye!</center>")
+		}
+	}
+	fmt.Fprintf(w,"<center>Hello Golang!</center>")
 }
 
 func main() {
@@ -62,15 +83,21 @@ func main() {
 		} else if func_selection == "point" { //指针使用
 			var num int = 30
 			var addr *int
-
 			addr = &num
-
 			fmt.Println(" num=", num, "\r\n &num=", &num, "\r\n addr=", addr, "\r\n &addr=", &addr)
 		} else if func_selection == "struct" { //结构体使用
 			xm := mUser{"xiaoming", "123456"}
 			parsemUser(xm)
+		} else if func_selection == "slice" { // 切片
+			s_lice :=[] int {1,2,3,4,5}
+			fmt.Printf("len=%d cap=%d slice=%v\n",len(s_lice),cap(s_lice),s_lice)
+		} else if func_selection == "web" { //网站
+			http.HandleFunc("/",web_server) //设置访问路由
+			err := http.ListenAndServe(":10080",nil) // 设置监听端口
+			if err != nil {
+				log.Fatal("ListenAndServe",err)
+			}
 		}
-
 	}
 
 }
